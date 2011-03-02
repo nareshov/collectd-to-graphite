@@ -46,7 +46,11 @@ var request_handler = function(request, response) {
       var time = m[3];
       var value = m[4].replace(/:/, "");
 
-      name = "collectd." + name.replace(/\./g, "_").replace(/\//g, ".");
+      var hostname_metric = name.split("/");
+      var hostname = hostname_metric.shift().split(".").reverse().join(".");
+      var metric = hostname_metric.join(".");
+      
+      name = hostname + "." + metric;
       message = [name, value, time].join(" ")
       console.log(message)
       graphite_connection.write(message + "\n");
